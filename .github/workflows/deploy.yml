@@ -18,6 +18,9 @@ jobs:
       - name: Install Vercel CLI
         run: npm i -g vercel@latest
 
+      - name: Debug token
+        run: vercel whoami --token ${{ secrets.VERCEL_TOKEN }} || true
+
       - name: Link project
         run: vercel link --yes --project fixora --token ${{ secrets.VERCEL_TOKEN }}
 
