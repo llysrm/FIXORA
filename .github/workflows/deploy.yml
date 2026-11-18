@@ -1,0 +1,31 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Link project
+        run: vercel link --yes --project fixora --token ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Set env vars
+        run: |
+          echo "${{ secrets.TURSO_URL }}" | vercel env add TURSO_DATABASE_URL production --token ${{ secrets.VERCEL_TOKEN }} || true
+          echo "${{ secrets.TURSO_TOKEN }}" | vercel env add TURSO_AUTH_TOKEN production --token ${{ secrets.VERCEL_TOKEN }} || true
+          echo "${{ secrets.SESSION_SECRET }}" | vercel env add SESSION_SECRET production --token ${{ secrets.VERCEL_TOKEN }} || true
+
+      - name: Deploy production
+        run: vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
