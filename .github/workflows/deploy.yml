@@ -26,9 +26,12 @@ jobs:
 
       - name: Set env vars
         run: |
-          echo "${{ secrets.TURSO_URL }}" | vercel env add TURSO_DATABASE_URL production --token ${{ secrets.VERCEL_TOKEN }} || true
-          echo "${{ secrets.TURSO_TOKEN }}" | vercel env add TURSO_AUTH_TOKEN production --token ${{ secrets.VERCEL_TOKEN }} || true
-          echo "${{ secrets.SESSION_SECRET }}" | vercel env add SESSION_SECRET production --token ${{ secrets.VERCEL_TOKEN }} || true
+          vercel env rm TURSO_DATABASE_URL production --yes --token ${{ secrets.VERCEL_TOKEN }} || true
+          vercel env rm TURSO_AUTH_TOKEN production --yes --token ${{ secrets.VERCEL_TOKEN }} || true
+          vercel env rm SESSION_SECRET production --yes --token ${{ secrets.VERCEL_TOKEN }} || true
+          printf '%s' "${{ secrets.TURSO_URL }}" | vercel env add TURSO_DATABASE_URL production --token ${{ secrets.VERCEL_TOKEN }}
+          printf '%s' "${{ secrets.TURSO_TOKEN }}" | vercel env add TURSO_AUTH_TOKEN production --token ${{ secrets.VERCEL_TOKEN }}
+          printf '%s' "${{ secrets.SESSION_SECRET }}" | vercel env add SESSION_SECRET production --token ${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy production
         run: vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
