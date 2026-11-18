@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FIXORA - Home Service Solution
 
-## Getting Started
+Full-stack home service marketplace: customers book vetted providers for AC repair,
+plumbing, electrical, cleaning, appliance repair, and laundry.
 
-First, run the development server:
+**Tagline:** Your Home, Our Solution.
+
+## Stack
+
+- Next.js (App Router) + React + TypeScript + Tailwind CSS
+- Drizzle ORM + Turso (libSQL)
+- Session auth: bcrypt + HTTP-only cookies
+- Lucide icons
+
+## Local setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env        # defaults to a local file: SQLite db
+npm run db:migrate          # create tables
+npm run db:seed             # demo data
+npm run dev                 # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Demo accounts (after seeding)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | admin@fixora.test | admin1234 |
+| Customer | alice@fixora.test | customer1234 |
+| Customer | robert@fixora.test | customer1234 |
+| Provider | marcus@fixora.test | provider1234 |
+| Provider (any of 5) | sofia/james/lena/devon/tom @fixora.test | provider1234 |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Turso setup
 
-## Learn More
+```bash
+# install the Turso CLI, then:
+turso db create fixora
+turso db show fixora --url          # -> TURSO_DATABASE_URL (libsql://...)
+turso db tokens create fixora       # -> TURSO_AUTH_TOKEN
+```
 
-To learn more about Next.js, take a look at the following resources:
+Put both values in `.env` (and later in Vercel env vars), then run migrations:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run db:migrate
+npm run db:seed   # optional demo data
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy to Vercel
 
-## Deploy on Vercel
+1. Push the repo to GitHub.
+2. In Vercel: **New Project** -> import the repo (framework auto-detected).
+3. Add environment variables:
+   - `TURSO_DATABASE_URL` = your libsql:// URL
+   - `TURSO_AUTH_TOKEN` = your Turso token
+   - `SESSION_SECRET` = a random string (`openssl rand -base64 32`)
+4. Deploy. After the first deploy, run `npm run db:migrate` locally with the
+   production `.env` values to create the tables (migrations run against Turso
+   from anywhere), then optionally seed.
+5. Health check: `GET /api/health` returns `{"status":"ok"}` when the DB is reachable.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/                 # routes (public pages + customer/provider/admin dashboards)
+components/          # UI + feature components
+db/                  # Drizzle schema + client
+drizzle/             # generated SQL migrations
+lib/                 # auth, validations, server actions, helpers
+scripts/             # migrate + seed scripts
+```
+
+## Feature map
+
+- **Auth**: email/password, bcrypt hashing, DB-backed sessions in HTTP-only cookies, RBAC (customer / provider / admin)
+- **Customer**: browse/search/filter services, book with date + time slot, double-booking prevention (partial unique index), booking status tracking, cancel, review completed bookings, message providers, notifications, profile
+- **Provider**: application + admin approval, service CRUD, availability schedule, accept/reject/progress bookings, chat, ratings, profile
+- **Admin**: approve/reject providers, manage categories, activate/deactivate listings, view bookings, resolve complaints, delete users
+- **Security**: server-side role checks on every dashboard, ownership checks on bookings/messages, zod validation, login rate limiting, no secrets client-side
+
+## Notes
+
+- Prices are stored in cents to avoid float issues.
+- Slot model: fixed 2-hour slots (08:00-10:00 ... 15:00-17:00); a provider can hold
+  at most one active booking per slot (enforced in the DB).
+- Profile photos use URL fields; wire a cloud storage provider (UploadThing,
+  S3, Cloudinary) if file uploads are needed.
+- Rate limiting is in-memory (per instance). Use Upstash Redis for multi-instance
+  deployments.

@@ -1,26 +1,41 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-navy: #142b4a;
+  --color-navy-dark: #0e1f36;
+  --color-blue: #3976c6;
+  --color-blue-dark: #2c5da0;
+  --color-surface: #ffffff;
+  --color-background: #f7f9fc;
+  --color-accent: #36a77a;
+  --color-accent-dark: #2c8a65;
+  --color-ink: #202938;
+  --color-ink-soft: #5b6474;
+  --color-line: #e3e9f2;
+  --color-danger: #c94f4f;
+  --color-warning: #c9932e;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --shadow-card: 0 1px 2px rgb(20 43 74 / 0.04), 0 4px 16px rgb(20 43 74 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(20 43 74 / 0.06), 0 12px 32px rgb(20 43 74 / 0.12);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-blue) 25%, transparent);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 2px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
 }
