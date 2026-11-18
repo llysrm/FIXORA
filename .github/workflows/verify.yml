@@ -1,0 +1,23 @@
+name: Verify production
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/verify.yml']
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Smoke test live site
+        run: |
+          BASE="https://fixora-snowy.vercel.app"
+          for path in / /services /about /contact /login /register /api/health; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$BASE$path")
+            echo "$path -> $code"
+          done
+          echo "--- health body ---"
+          curl -s "$BASE/api/health"
+          echo ""
+          echo "--- services contains seeded item? ---"
+          curl -s "$BASE/services" | grep -o "AC deep cleaning" | head -1
