@@ -3,10 +3,14 @@ import { BadgeCheck, Clock3, HandCoins } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { TAGLINE } from "@/lib/constants";
+import { getLang } from "@/lib/lang";
+import { getDict } from "@/lib/dictionaries";
 
 export const metadata: Metadata = { title: "About" };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const lang = await getLang();
+  const t = getDict(lang);
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -14,13 +18,10 @@ export default function AboutPage() {
         <section className="border-b border-line bg-surface">
           <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
             <h1 className="text-3xl font-bold tracking-tight text-navy sm:text-4xl">
-              Home maintenance should not be a headache.
+              {t.about_title}
             </h1>
             <p className="mt-4 text-lg text-ink-soft">
-              FIXORA started from a simple frustration: finding a reliable plumber, electrician, or
-              cleaner meant asking around, waiting on callbacks, and hoping for the best. We built
-              the platform we wished existed, one where quality providers are vetted, prices are
-              upfront, and the whole job lives in one place.
+              {t.about_body}
             </p>
             <p className="mt-3 text-sm font-medium text-blue">{TAGLINE}</p>
           </div>
@@ -30,18 +31,18 @@ export default function AboutPage() {
             {[
               {
                 icon: BadgeCheck,
-                title: "Vetted, not verified-on-paper",
-                text: "We review every provider application manually: identity, skills, and service quality before approval.",
+                title: t.about_card1_title,
+                text: t.about_card1_text,
               },
               {
                 icon: HandCoins,
-                title: "Upfront pricing",
-                text: "Providers publish their rates per visit or per hour. You see the full price before you book.",
+                title: t.about_card2_title,
+                text: t.about_card2_text,
               },
               {
                 icon: Clock3,
-                title: "Bookings that stay on track",
-                text: "Real-time status tracking from pending to completed, with in-app messaging for anything in between.",
+                title: t.about_card3_title,
+                text: t.about_card3_text,
               },
             ].map((item) => (
               <div key={item.title}>

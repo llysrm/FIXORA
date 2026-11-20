@@ -9,10 +9,12 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card, Avatar, StatusBadge } from "@/components/ui";
 import { BookingForm } from "@/components/booking-form";
-import { formatPrice } from "@/lib/constants";
+import { formatPrice, formatReviewCount } from "@/lib/constants";
+import { getLang } from "@/lib/lang";
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const lang = await getLang();
   const [user, rows] = await Promise.all([
     getSessionUser(),
     db
@@ -97,7 +99,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                     <p className="mt-1 flex items-center gap-1 text-sm font-medium text-ink">
                       <Star className="h-4 w-4 fill-warning text-warning" />
                       {rating.toFixed(1)}
-                      <span className="font-normal text-ink-soft">({ratingRow?.total} reviews)</span>
+                      <span className="font-normal text-ink-soft">({formatReviewCount(Number(ratingRow?.total || 0), lang)})</span>
                     </p>
                   )}
                   {service.providerBio && <p className="mt-2 text-sm text-ink-soft">{service.providerBio}</p>}

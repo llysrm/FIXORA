@@ -10,10 +10,12 @@ import { Footer } from "@/components/footer";
 import { Card, Avatar } from "@/components/ui";
 import { ServiceCard, type ServiceCardData } from "@/components/service-card";
 import { StartChatButton } from "@/components/start-chat-button";
-import { formatDate } from "@/lib/constants";
+import { formatDate, formatReviewCount } from "@/lib/constants";
+import { getLang } from "@/lib/lang";
 
 export default async function ProviderProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const lang = await getLang();
   const [user, rows] = await Promise.all([
     getSessionUser(),
     db
@@ -100,7 +102,7 @@ export default async function ProviderProfilePage({ params }: { params: Promise<
                   <span className="flex items-center gap-1 font-medium text-ink">
                     <Star className="h-4 w-4 fill-warning text-warning" />
                     {rating.toFixed(1)}
-                    <span className="font-normal text-ink-soft">({stats?.total} reviews)</span>
+                    <span className="font-normal text-ink-soft">({formatReviewCount(Number(stats?.total || 0), lang)})</span>
                   </span>
                 )}
               </div>
@@ -119,7 +121,7 @@ export default async function ProviderProfilePage({ params }: { params: Promise<
           ) : (
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((s) => (
-                <ServiceCard key={s.id} service={s} />
+                <ServiceCard key={s.id} service={s} lang={lang} />
               ))}
             </div>
           )}
@@ -140,7 +142,7 @@ export default async function ProviderProfilePage({ params }: { params: Promise<
                     </div>
                   </div>
                   {r.comment && <p className="mt-2 text-sm text-ink-soft">{r.comment}</p>}
-                  <p className="mt-2 text-xs text-ink-soft">{formatDate(r.createdAt)}</p>
+                  <p className="mt-2 text-xs text-ink-soft">{formatDate(r.createdAt, lang)}</p>
                 </Card>
               ))}
             </div>

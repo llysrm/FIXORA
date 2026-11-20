@@ -34,12 +34,12 @@ async function main() {
 
   // Categories
   const cats = [
-    { name: "AC Repair", slug: "ac-repair", iconName: "air-vent", description: "Air conditioning service and repair" },
-    { name: "Plumbing", slug: "plumbing", iconName: "droplets", description: "Leaks, pipes, drains, and fixtures" },
-    { name: "Electrical", slug: "electrical", iconName: "zap", description: "Wiring, outlets, and electrical repairs" },
-    { name: "Home Cleaning", slug: "home-cleaning", iconName: "sparkles", description: "Deep and routine home cleaning" },
-    { name: "Appliance Repair", slug: "appliance-repair", iconName: "washing-machine", description: "Washing machines, fridges, and more" },
-    { name: "Laundry", slug: "laundry", iconName: "shirt", description: "Pickup and delivery laundry service" },
+    { name: "Servis AC", slug: "ac-repair", iconName: "air-vent", description: "Servis dan perbaikan pendingin ruangan" },
+    { name: "Perbaikan Pipa", slug: "plumbing", iconName: "droplets", description: "Kebocoran, pipa, saluran air, dan keran" },
+    { name: "Listrik", slug: "electrical", iconName: "zap", description: "Instalasi kabel, saklar, dan perbaikan kelistrikan" },
+    { name: "Kebersihan Rumah", slug: "home-cleaning", iconName: "sparkles", description: "Kebersihan rutin dan bersih total rumah" },
+    { name: "Servis Elektronik", slug: "appliance-repair", iconName: "washing-machine", description: "Mesin cuci, kulkas, dan elektronik lainnya" },
+    { name: "Laundry", slug: "laundry", iconName: "shirt", description: "Jemput, cuci, dan antar laundry" },
   ];
   const catIds: Record<string, string> = {};
   for (const c of cats) {
@@ -50,12 +50,12 @@ async function main() {
 
   // Providers
   const providers = [
-    { name: "Marcus Reed", email: "marcus@fixora.test", business: "Reed Cooling & Heating", city: "Portland", bio: "Certified HVAC technician with 12 years of experience. Specializing in AC repair, refrigerant recharge, and seasonal maintenance." },
-    { name: "Sofia Alvarez", email: "sofia@fixora.test", business: "Alvarez Plumbing Co.", city: "Portland", bio: "Family-run plumbing business. Emergency leaks, pipe replacement, water heaters, and bathroom remodels." },
-    { name: "James Okafor", email: "james@fixora.test", business: "Spark Electric LLC", city: "Salem", bio: "Licensed electrician. Panel upgrades, outlet installs, lighting, and safety inspections." },
-    { name: "Lena Petrova", email: "lena@fixora.test", business: "PureNest Cleaning", city: "Portland", bio: "Eco-friendly home cleaning team. Deep cleaning, move-in/move-out, and recurring visits." },
-    { name: "Devon Park", email: "devon@fixora.test", business: "Park Appliance Fix", city: "Beaverton", bio: "Appliance repair specialist: washers, dryers, refrigerators, dishwashers, and ovens." },
-    { name: "Tom Nguyen", email: "tom@fixora.test", business: "FreshFold Laundry", city: "Portland", bio: "Pickup, wash, fold, and delivery. Same-day service available." },
+    { name: "Budi Santoso", email: "marcus@fixora.test", business: "Budi Teknik Pendingin", city: "Jakarta Selatan", bio: "Teknisi AC bersertifikat dengan 12 tahun pengalaman. Spesialis servis AC, isi freon, dan perawatan musiman." },
+    { name: "Sari Wulandari", email: "sofia@fixora.test", business: "Sari Plumbing", city: "Jakarta Selatan", bio: "Usaha keluarga di bidang pipa. Penanganan kebocoran darurat, ganti pipa, water heater, dan renovasi kamar mandi." },
+    { name: "Joko Prasetyo", email: "james@fixora.test", business: "Joko Listrik", city: "Depok", bio: "Elektrikisi berlisensi. Upgrade panel, pasang saklar, pemasangan lampu, dan inspeksi keamanan." },
+    { name: "Lestari Rambe", email: "lena@fixora.test", business: "BersihRumah", city: "Jakarta Timur", bio: "Tim kebersihan rumah ramah lingkungan. Bersih total, pindahan, dan kunjungan rutin." },
+    { name: "Dedi Kurniawan", email: "devon@fixora.test", business: "Dedi Servis Elektronik", city: "Tangerang", bio: "Spesialis servis elektronik: mesin cuci, kulkas, pengering, dan oven." },
+    { name: "Tommy Wijaya", email: "tom@fixora.test", business: "LaundryKilat", city: "Jakarta Utara", bio: "Jemput, cuci, lipat, dan antar. Tersedia layanan hari yang sama." },
   ];
 
   const providerIds: string[] = [];
@@ -64,7 +64,7 @@ async function main() {
     providerIds.push(uid);
     await db.insert(schema.users).values({
       id: uid, name: p.name, email: p.email,
-      passwordHash: await hash("provider1234"), role: "provider", phone: "+1 555 010 20" + String(providerIds.length).padStart(2, "0"),
+      passwordHash: await hash("provider1234"), role: "provider", phone: "+62 812 0000 20" + String(providerIds.length).padStart(2, "0"),
     });
     await db.insert(schema.providerProfiles).values({
       id: id(), userId: uid, businessName: p.business, city: p.city, bio: p.bio, status: "approved",
@@ -78,18 +78,18 @@ async function main() {
 
   // Services
   const svc = [
-    { title: "AC deep cleaning & tune-up", provider: 0, cat: "ac-repair", price: 8900, unit: "visit" as const, desc: "Full air-conditioner deep clean: filter, coil, drain flush, refrigerant check, and performance test. Takes about 2 hours." },
-    { title: "AC refrigerant recharge", provider: 0, cat: "ac-repair", price: 14500, unit: "visit" as const, desc: "Leak inspection and refrigerant top-up for split and window units. Includes pressure testing." },
-    { title: "Leak detection & pipe repair", provider: 1, cat: "plumbing", price: 7500, unit: "visit" as const, desc: "Find hidden leaks, repair or replace damaged pipe sections, and pressure-test the line." },
-    { title: "Water heater installation", provider: 1, cat: "plumbing", price: 22000, unit: "visit" as const, desc: "Removal of the old unit and installation of a new tank or tankless water heater, including connections and testing." },
-    { title: "Outlet & switch installation", provider: 2, cat: "electrical", price: 5500, unit: "hour" as const, desc: "Install or replace outlets, switches, and dimmers. Includes safety check of the circuit." },
-    { title: "Electrical panel inspection", provider: 2, cat: "electrical", price: 9900, unit: "visit" as const, desc: "Full panel inspection: breaker condition, load balance, grounding, and written safety report." },
-    { title: "Whole-home deep cleaning", provider: 3, cat: "home-cleaning", price: 15900, unit: "visit" as const, desc: "Top-to-bottom clean of every room: kitchen, bathrooms, floors, windows, and dusting. Supplies included." },
-    { title: "Move-in / move-out cleaning", provider: 3, cat: "home-cleaning", price: 19500, unit: "visit" as const, desc: "Empty-property deep clean, ready for handover or new tenants. Inside cabinets and appliances included." },
-    { title: "Washing machine repair", provider: 4, cat: "appliance-repair", price: 6900, unit: "visit" as const, desc: "Diagnosis and repair of drum, drain, and motor issues for all major washer brands. Parts quoted separately." },
-    { title: "Refrigerator repair", provider: 4, cat: "appliance-repair", price: 7900, unit: "visit" as const, desc: "Cooling problems, ice makers, thermostats, and compressor diagnostics for fridges and freezers." },
-    { title: "Laundry pickup & delivery", provider: 5, cat: "laundry", price: 3500, unit: "visit" as const, desc: "We pick up, wash, dry, fold, and deliver. Up to 3 bags per visit, next-day return." },
-    { title: "Duvet & bedding cleaning", provider: 5, cat: "laundry", price: 4500, unit: "visit" as const, desc: "Professional washing for duvets, comforters, and bedding sets, including stain treatment." },
+    { title: "Cuci AC total & perawatan", provider: 0, cat: "ac-repair", price: 150000, unit: "visit" as const, desc: "Cuci AC menyeluruh: filter, coil, flush saluran pembuangan, cek freon, dan tes performa. Butuh sekitar 2 jam." },
+    { title: "Isi freon AC", provider: 0, cat: "ac-repair", price: 250000, unit: "visit" as const, desc: "Pengecekan kebocoran dan tambah freon untuk AC split dan window. Termasuk tes tekanan." },
+    { title: "Deteksi kebocoran & perbaikan pipa", provider: 1, cat: "plumbing", price: 180000, unit: "visit" as const, desc: "Temukan kebocoran tersembunyi, perbaiki atau ganti pipa yang rusak, dan tes tekanan saluran." },
+    { title: "Pemasangan water heater", provider: 1, cat: "plumbing", price: 450000, unit: "visit" as const, desc: "Pembongkaran unit lama dan pemasangan water heater baru, termasuk sambungan dan pengujian." },
+    { title: "Pasang saklar & stop kontak", provider: 2, cat: "electrical", price: 120000, unit: "hour" as const, desc: "Pasang atau ganti saklar, stop kontak, dan dimmer. Termasuk cek keamanan sirkuit." },
+    { title: "Inspeksi panel listrik", provider: 2, cat: "electrical", price: 200000, unit: "visit" as const, desc: "Inspeksi panel lengkap: kondisi breaker, keseimbangan beban, pembumian, dan laporan keamanan tertulis." },
+    { title: "Bersih total seluruh rumah", provider: 3, cat: "home-cleaning", price: 350000, unit: "visit" as const, desc: "Bersih menyeluruh setiap ruangan: dapur, kamar mandi, lantai, jendela, dan debu. Termasuk peralatan." },
+    { title: "Bersih untuk pindahan", provider: 3, cat: "home-cleaning", price: 500000, unit: "visit" as const, desc: "Bersih total properti kosong, siap diserahkan ke pemilik atau penyewa baru. Termasuk dalam kulkas dan lemari." },
+    { title: "Perbaikan mesin cuci", provider: 4, cat: "appliance-repair", price: 180000, unit: "visit" as const, desc: "Diagnosis dan perbaikan masalah tabung, pembuangan, dan motor untuk semua merek utama. Biaya spare part dihitung terpisah." },
+    { title: "Perbaikan kulkas", provider: 4, cat: "appliance-repair", price: 220000, unit: "visit" as const, desc: "Masalah pendinginan, pembuat es, termostat, dan diagnosis kompresor untuk kulkas dan freezer." },
+    { title: "Laundry jemput & antar", provider: 5, cat: "laundry", price: 35000, unit: "visit" as const, desc: "Kami jemput, cuci, keringkan, lipat, dan antar. Sampai 3 tas per kunjungan, selesai hari berikutnya." },
+    { title: "Cuci bed cover & seprei", provider: 5, cat: "laundry", price: 60000, unit: "visit" as const, desc: "Cuci profesional untuk bed cover, selimut, dan set seprei, termasuk penanganan noda." },
   ];
 
   const serviceIds: string[] = [];
@@ -104,8 +104,8 @@ async function main() {
 
   // Customers
   const customers = [
-    { name: "Alice Morgan", email: "alice@fixora.test", addr: "1204 SE Belmont St, Portland" },
-    { name: "Robert Kim", email: "robert@fixora.test", addr: "88 NW Couch St, Portland" },
+    { name: "Andi Pratama", email: "alice@fixora.test", addr: "Jl. Kemang Raya No. 12, Jakarta Selatan" },
+    { name: "Rina Melati", email: "robert@fixora.test", addr: "Jl. Cikini Raya No. 45, Jakarta Pusat" },
   ];
   const customerIds: string[] = [];
   for (const c of customers) {
@@ -124,10 +124,10 @@ async function main() {
   const future = (daysAhead: number) => { const d = new Date(today); d.setDate(d.getDate() + daysAhead); return iso(d); };
 
   const completedBookings = [
-    { customer: 0, service: 0, daysAgo: 21, slot: "10:00-12:00", rating: 5, comment: "Marcus was punctual, tidy, and the AC runs like new. Booking took two minutes." },
-    { customer: 0, service: 6, daysAgo: 14, slot: "08:00-10:00", rating: 5, comment: "The team deep-cleaned the whole place before my parents visited. Zero complaints." },
-    { customer: 1, service: 3, daysAgo: 10, slot: "13:00-15:00", rating: 4, comment: "Water heater installed same week. Slight delay on arrival, but quality work." },
-    { customer: 1, service: 9, daysAgo: 6, slot: "15:00-17:00", rating: 5, comment: "Fixed our fridge compressor issue and explained everything clearly." },
+    { customer: 0, service: 0, daysAgo: 21, slot: "10:00-12:00", rating: 5, comment: "Mas Budi datang tepat waktu, kerjanya rapi, dan AC jadi dingin lagi. Pesannya juga cepat diproses." },
+    { customer: 0, service: 6, daysAgo: 14, slot: "08:00-10:00", rating: 5, comment: "Tim BersihRumah membersihkan seluruh rumah sebelum orang tua saya datang. Tidak ada keluhan." },
+    { customer: 1, service: 3, daysAgo: 10, slot: "13:00-15:00", rating: 4, comment: "Water heater terpasang di minggu yang sama. Datangnya agak telat, tapi hasilnya rapi." },
+    { customer: 1, service: 9, daysAgo: 6, slot: "15:00-17:00", rating: 5, comment: "Masalah kompresor kulkas beres dan dijelasin dengan detail. Recommended." },
   ];
 
   for (const b of completedBookings) {
@@ -158,7 +158,7 @@ async function main() {
       serviceId: serviceIds[4], scheduledDate: future(5), timeSlot: "13:00-15:00",
       status: "accepted", address: customers[1].addr,
       notes: "Two rooms need new outlets. Breaker occasionally trips.",
-      totalPrice: 11000,
+      totalPrice: 120000,
     },
   ]);
 

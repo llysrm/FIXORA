@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { STATUS_LABEL } from "@/lib/constants";
+import { STATUS_LABEL, type Lang } from "@/lib/constants";
 
 const buttonStyles = "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
@@ -110,15 +110,15 @@ export function Label({ children, htmlFor, className }: { children: ReactNode; h
   );
 }
 
-export function Card({ className, children }: { className?: string; children: ReactNode }) {
+export function Card({ className, bg, children }: { className?: string; bg?: string; children: ReactNode }) {
   return (
-    <div className={cn("rounded-xl border border-line bg-surface shadow-card", className)}>
+    <div className={cn("rounded-xl border border-line shadow-card", bg || "bg-surface", className)}>
       {children}
     </div>
   );
 }
 
-export function StatusBadge({ status }: { status: string }) {
+export function StatusBadge({ status, lang = "id" }: { status: string; lang?: Lang }) {
   const styles: Record<string, string> = {
     pending: "bg-warning/10 text-warning",
     accepted: "bg-blue/10 text-blue",
@@ -132,8 +132,8 @@ export function StatusBadge({ status }: { status: string }) {
     dismissed: "bg-ink-soft/10 text-ink-soft",
   };
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium capitalize", styles[status] || "bg-ink-soft/10 text-ink-soft")}>
-      {STATUS_LABEL[status] || status}
+    <span className={cn("inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium", styles[status] || "bg-ink-soft/10 text-ink-soft")}>
+      {STATUS_LABEL[status]?.[lang] || status}
     </span>
   );
 }

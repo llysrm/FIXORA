@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Star } from "lucide-react";
 import { Card } from "./ui";
-import { formatPrice } from "@/lib/constants";
+import { formatPrice, formatReviewCount, formatServiceCount } from "@/lib/constants";
+import type { Lang } from "@/lib/constants";
 
 export type ServiceCardData = {
   id: string;
@@ -17,7 +18,13 @@ export type ServiceCardData = {
   reviewCount: number;
 };
 
-export function ServiceCard({ service }: { service: ServiceCardData }) {
+const unitLabels: Record<string, { en: string; id: string }> = {
+  visit: { en: "visit", id: "kunjungan" },
+  hour: { en: "hour", id: "jam" },
+};
+
+export function ServiceCard({ service, lang = "id" }: { service: ServiceCardData; lang?: Lang }) {
+  const unit = unitLabels[service.priceUnit]?.[lang] ?? service.priceUnit;
   return (
     <Card className="flex h-full flex-col p-5 transition-shadow hover:shadow-lift">
       <div className="flex items-start justify-between gap-3">
@@ -28,7 +35,7 @@ export function ServiceCard({ service }: { service: ServiceCardData }) {
           <span className="flex items-center gap-1 text-sm font-medium text-ink">
             <Star className="h-4 w-4 fill-warning text-warning" />
             {service.rating?.toFixed(1)}
-            <span className="text-xs font-normal text-ink-soft">({service.reviewCount})</span>
+            <span className="text-xs font-normal text-ink-soft">({formatReviewCount(service.reviewCount, lang)})</span>
           </span>
         )}
       </div>
@@ -42,10 +49,10 @@ export function ServiceCard({ service }: { service: ServiceCardData }) {
         <div>
           <p className="text-lg font-bold text-navy">
             {formatPrice(service.price)}
-            <span className="text-xs font-normal text-ink-soft"> / {service.priceUnit}</span>
+            <span className="text-xs font-normal text-ink-soft"> / {unit}</span>
           </p>
           <p className="text-xs text-ink-soft">
-            by{" "}
+            {lang === "id" ? "oleh" : "by"}{" "}
             <Link href={`/providers/${service.providerId}`} className="hover:text-blue">
               {service.providerName}
             </Link>
@@ -56,7 +63,7 @@ export function ServiceCard({ service }: { service: ServiceCardData }) {
           href={`/services/${service.id}`}
           className="rounded-lg bg-navy px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-navy-dark"
         >
-          Book
+          {lang === "id" ? "Pesan" : "Book"}
         </Link>
       </div>
     </Card>

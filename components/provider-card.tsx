@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { MapPin, Star } from "lucide-react";
 import { Avatar, Card } from "./ui";
+import { formatReviewCount, formatServiceCount } from "@/lib/constants";
+import type { Lang } from "@/lib/constants";
 
 export type ProviderCardData = {
   userId: string;
@@ -14,7 +16,7 @@ export type ProviderCardData = {
   reviewCount: number;
 };
 
-export function ProviderCard({ provider }: { provider: ProviderCardData }) {
+export function ProviderCard({ provider, lang = "id" }: { provider: ProviderCardData; lang?: Lang }) {
   return (
     <Card className="flex h-full flex-col p-5 transition-shadow hover:shadow-lift">
       <div className="flex items-center gap-3">
@@ -31,7 +33,7 @@ export function ProviderCard({ provider }: { provider: ProviderCardData }) {
                 <MapPin className="h-3.5 w-3.5" /> {provider.city}
               </>
             ) : (
-              "Location not set"
+              lang === "id" ? "Lokasi belum diisi" : "Location not set"
             )}
           </p>
         </div>
@@ -39,16 +41,16 @@ export function ProviderCard({ provider }: { provider: ProviderCardData }) {
       {provider.bio && <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{provider.bio}</p>}
       <div className="mt-auto flex items-center justify-between pt-4 text-sm">
         <span className="text-ink-soft">
-          {provider.serviceCount} service{provider.serviceCount === 1 ? "" : "s"}
+          {formatServiceCount(provider.serviceCount, lang)}
         </span>
         {provider.reviewCount > 0 ? (
           <span className="flex items-center gap-1 font-medium text-ink">
             <Star className="h-4 w-4 fill-warning text-warning" />
             {provider.rating?.toFixed(1)}
-            <span className="text-xs font-normal text-ink-soft">({provider.reviewCount})</span>
+            <span className="text-xs font-normal text-ink-soft">({formatReviewCount(provider.reviewCount, lang)})</span>
           </span>
         ) : (
-          <span className="text-xs text-ink-soft">New provider</span>
+          <span className="text-xs text-ink-soft">{lang === "id" ? "Penyedia baru" : "New provider"}</span>
         )}
       </div>
     </Card>

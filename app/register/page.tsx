@@ -6,6 +6,8 @@ import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui";
 import { Logo } from "@/components/logo";
 import { RegisterForm } from "@/components/auth-forms";
+import { getLang } from "@/lib/lang";
+import { getDict } from "@/lib/dictionaries";
 
 export const metadata: Metadata = { title: "Create account" };
 
@@ -19,6 +21,8 @@ export default async function RegisterPage({
     redirect(user.role === "admin" ? "/admin" : user.role === "provider" ? "/provider/dashboard" : "/dashboard");
   }
   const { role } = await searchParams;
+  const lang = await getLang();
+  const t = getDict(lang);
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -26,9 +30,9 @@ export default async function RegisterPage({
         <Card className="p-8">
           <div className="mb-6 flex flex-col items-center">
             <Logo />
-            <h1 className="mt-4 text-xl font-bold text-navy">Join FIXORA</h1>
+            <h1 className="mt-4 text-xl font-bold text-navy">{t.register_title}</h1>
             <p className="mt-1 text-center text-sm text-ink-soft">
-              Book trusted pros, or grow your service business.
+              {t.register_subtitle}
             </p>
           </div>
           <RegisterForm defaultRole={role === "provider" ? "provider" : "customer"} />

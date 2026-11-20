@@ -6,6 +6,8 @@ import { Footer } from "@/components/footer";
 import { Card } from "@/components/ui";
 import { Logo } from "@/components/logo";
 import { LoginForm } from "@/components/auth-forms";
+import { getLang } from "@/lib/lang";
+import { getDict } from "@/lib/dictionaries";
 
 export const metadata: Metadata = { title: "Log in" };
 
@@ -14,6 +16,8 @@ export default async function LoginPage() {
   if (user) {
     redirect(user.role === "admin" ? "/admin" : user.role === "provider" ? "/provider/dashboard" : "/dashboard");
   }
+  const lang = await getLang();
+  const t = getDict(lang);
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -21,8 +25,8 @@ export default async function LoginPage() {
         <Card className="p-8">
           <div className="mb-6 flex flex-col items-center">
             <Logo />
-            <h1 className="mt-4 text-xl font-bold text-navy">Welcome back</h1>
-            <p className="mt-1 text-sm text-ink-soft">Log in to manage your bookings and services.</p>
+            <h1 className="mt-4 text-xl font-bold text-navy">{t.login_title}</h1>
+            <p className="mt-1 text-sm text-ink-soft">{t.login_subtitle}</p>
           </div>
           <LoginForm />
         </Card>
