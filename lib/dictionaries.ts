@@ -277,7 +277,7 @@ export const dictionaries = {
   },
 } as const;
 
-export type Dict = (typeof dictionaries)["id"];
+export type Dict = Record<keyof (typeof dictionaries)["id"], string>;
 export type DictKey = keyof Dict;
 
 export function getDict(lang: LangLike): Dict {

@@ -13,7 +13,7 @@ export default async function AvailabilityPage() {
     .from(providerAvailability)
     .where(eq(providerAvailability.providerId, user.id));
 
-  const initial = DAYS.map((_, day) => {
+  const initial = Array.from({ length: 7 }, (_, day) => {
     const row = rows.find((r) => r.dayOfWeek === day);
     return {
       day,

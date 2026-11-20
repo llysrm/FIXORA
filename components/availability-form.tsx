@@ -7,7 +7,8 @@ import { SubmitButton } from "./submit-button";
 
 type DayRow = { day: number; isActive: boolean; startTime: string; endTime: string };
 
-export function AvailabilityForm({ initial }: { initial: DayRow[] }) {
+export function AvailabilityForm({ initial, lang }: { initial: DayRow[]; lang?: "en" | "id" }) {
+  const days = DAYS[lang === "en" ? "en" : "id"];
   return (
     <form action={saveAvailabilityAction} className="space-y-4">
       {initial.map((row) => (
@@ -19,7 +20,7 @@ export function AvailabilityForm({ initial }: { initial: DayRow[] }) {
               defaultChecked={row.isActive}
               className="h-4 w-4 rounded border-line text-navy focus:ring-navy"
             />
-            {DAYS[row.day]}
+            {days[row.day]}
           </label>
           <div>
             <Label htmlFor={`start-${row.day}`} className="sr-only">Start</Label>
